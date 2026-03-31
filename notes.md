@@ -27,7 +27,7 @@
    RAG is a memory for LLM
 
 6. What is the reversal curse — use your own example?
-   Reversal Curse means the knowledge to the model is trained in one direction like my wife is deepika but the model doesnt know who is deepika's husband.
+   Reversal Curse means the knowledge to the model is trained in one direction.
 
 7. What is the context window?
    Context window is everything the model can see in a single converation. It includes system prompt, user messages, assistant history, and RAG injected facts. When the conversation ends it gets deleted."
