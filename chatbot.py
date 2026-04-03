@@ -63,5 +63,6 @@ while True:
         "role": "assistant",
         "content": assistant_reply
     })
+    
     print(f"AI: {assistant_reply}")
     print("-" * 40)

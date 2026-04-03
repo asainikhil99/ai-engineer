@@ -49,7 +49,18 @@ def summarize(text, style):
 print("📄 Document Summarizer")
 print("-" * 40)
 
-text = input("Paste your text here:\n")
+print("\nChoose Input type")
+print("1. Text ")
+print("2. filePath/pdf ")
+input_type = input("Choose 1 or 2 : ")
+if input_type == "1":  
+    text = input("Paste your text here:\n")
+elif input_type == "2":
+    filePath = input("Enter file path")
+    with open(filePath, "r") as f:
+        text = f.read()
+    print(f"Loaded with {len(text)} characters")
+
 
 print("\nChoose summary style:")
 print("1. Bullet points")
