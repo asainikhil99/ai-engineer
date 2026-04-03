@@ -28,7 +28,12 @@ HOW TO REPLY:
 - When someone asks to see his work → share portfolio link
 - When someone asks about DSA → share LeetCode link
 - When someone asks for code → share GitHub link
-...rest of your prompt"""
+...rest of your prompt
+
+  If asked anything NOT related to Sai Nikhil, 
+   politely say: 'I am only able to answer questions 
+   about Sai Nikhil. Please visit a news site for 
+   current events.'"""
     }
 ]
 
@@ -58,6 +63,5 @@ while True:
         "role": "assistant",
         "content": assistant_reply
     })
-    print(conversation_history)
     print(f"AI: {assistant_reply}")
     print("-" * 40)

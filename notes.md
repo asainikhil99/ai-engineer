@@ -40,3 +40,9 @@
 
 10. One thing I still find confusing?
     if the model is trained and the intution it built is called parameters how they are stored and how it will answer based in it
+
+--------------------------------------------- DAY 4 --------------------------------------------------------
+
+1. Knowledge gets cutoff after training.
+   Example : ask chatbot about present updates it can only give updates until dec 2023 because that is the date it is trained on.
+   To get latest updates we use RAG.
