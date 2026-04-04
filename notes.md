@@ -46,3 +46,21 @@
 1. Knowledge gets cutoff after training.
    Example : ask chatbot about present updates it can only give updates until dec 2023 because that is the date it is trained on.
    To get latest updates we use RAG.
+   --------------------------------------------- DAY 5 ----------------------------------------------------------
+
+"I like dogs"
+↓
+Tokenize → [101, 1045, 2066, 3899, 102]
+↓
+Transformer layers (black box)
+
+- attention mixes context
+- captures meaning
+  ↓
+  Pooling → one vector
+  ↓
+  [0.23, 0.81, 0.14 ... x384] ← embedding
+  ↓
+  Cosine similarity vs every sentence (checks the angle and mark it 0deg -> 1, 90deg -> 0, 180deg -> -1)
+  ↓
+  Ranked results by similarity score
