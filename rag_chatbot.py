@@ -28,9 +28,11 @@ def load_and_split(file_path):
     print("📄 Loading PDF...")
     loader = PyPDFLoader(file_path)
     documents = loader.load()
+
+    print("✂️  Splitting into chunks...")
     splitter = RecursiveCharacterTextSplitter(
-        chunk_size=1000,
-        chunk_overlap=200,
+        chunk_size=300,
+        chunk_overlap=50,
         separators=["\n\n", "\n", ".", " "]
     )
     chunks = splitter.split_documents(documents)
@@ -54,10 +56,38 @@ def get_vectorstore(file_path=None):
             persist_directory="./chroma_langchain"
         )
 
-# ── RAG + Memory Chain ────────────────────────────────
+# ── Query Rewriter ────────────────────────────────────
+def rewrite_question(question, history):
+    if not history:
+        return question
+
+    history_text = "\n".join([
+        f"Human: {m.content}" if isinstance(m, HumanMessage)
+        else f"AI: {m.content}"
+        for m in history[-4:]  # last 2 exchanges
+    ])
+
+    rewrite_prompt = f"""Given this conversation:
+{history_text}
+
+Rewrite this follow up question as a standalone question:
+"{question}"
+
+Standalone question:"""
+
+    response = llm.invoke(rewrite_prompt)
+    rewritten = response.content.strip()
+    print(f"🔄 Rewritten query: {rewritten}")
+    return rewritten
+
+# ── Build RAG Chain ───────────────────────────────────
 def build_chain(vectorstore):
     retriever = vectorstore.as_retriever(
-        search_kwargs={"k": 5}
+        search_type="mmr",
+        search_kwargs={
+            "k": 5,
+            "fetch_k": 10
+        }
     )
 
     prompt = ChatPromptTemplate.from_messages([
@@ -107,7 +137,6 @@ if __name__ == "__main__":
         vectorstore = get_vectorstore()
 
     chain, retriever = build_chain(vectorstore)
-
     history = []
 
     print("\n💬 Assistant Ready! Type 'exit' to quit")
@@ -119,8 +148,11 @@ if __name__ == "__main__":
             print("Goodbye! 👋")
             break
 
+        # Rewrite question using history
+        search_query = rewrite_question(question, history)
+
         answer = chain.invoke({
-            "question": question,
+            "question": search_query,
             "history": history
         })
 
@@ -129,3 +161,11 @@ if __name__ == "__main__":
 
         print(f"\n🤖 Assistant: {answer}")
         print("-" * 40)
+
+        embeddings = HuggingFaceEmbeddings(model_name='all-MiniLM-L6-v2')
+        db = Chroma(persist_directory='./chroma_langchain', embedding_function=embeddings)
+        docs = db.get()
+        for i, doc in enumerate(docs['documents']):
+            if 'Stevens' in doc or 'education' in doc.lower():
+                print(f'Chunk {i}: {doc[:300]}')
+                print('---')
