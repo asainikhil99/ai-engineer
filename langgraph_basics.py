@@ -93,7 +93,9 @@ if __name__ == "__main__":
     print("-" * 40)
 
     messages = [
-        SystemMessage(content="You are a helpful assistant for Sai Nikhil. Use tools when needed.")
+        SystemMessage(content="""You are a helpful assistant for Sai Nikhil. 
+Only use tools when the user explicitly asks for a calculation or resume info.
+For general conversation, just respond normally.""")
     ]
 
     while True:
